@@ -1,15 +1,11 @@
 import datetime
-import os
 import re
-import re as regex
-from concurrent.futures import process
 from decimal import Decimal as dec
 from decimal import getcontext
-from operator import contains
 from pathlib import Path
 
-import fitz
 import pandas as pd
+from pypdf import PdfReader
 
 getcontext().prec = 3
 import time
@@ -21,27 +17,23 @@ CSV_OUTPUT = './output_csv/qube_transactions.csv'
 
 ##### OBJECT DEFENITIONS #####
 class Transaction():
-    def __init__(self, date, payee, amount, account_no):
+    def __init__(self, date, description, amount, account_no):
         self.date = date
-        self.payee = payee
+        self.description = description
         self.amount = amount
         self.account_no = account_no
 
     def as_dict(self):
-        return {'date': self.date, 'payee': self.payee, 'amount': self.amount, 'account_no': self.account_no}
+        return {'date': self.date, 'description': self.description, 'amount': self.amount, 'account_no': self.account_no}
 
 
 ##### FUNCTIONS #####
 def get_text(filepath: str) -> str:
-    ### Open pdf and parse for text
-    with fitz.open(filepath) as doc:
-        text = ""
-        for page in doc:
-            text += "\n"
-            text += page.get_text().strip()
-            print(text)
-        return text
-
+    doc = PdfReader(filepath)
+    text = ""
+    for page in doc.pages:
+        text += page.extract_text().strip() + '\n'
+    return text
 
 def parse_pdf_qube(pdf):
     ### scan the pdf text and separate it into needed data chunks 
@@ -50,7 +42,7 @@ def parse_pdf_qube(pdf):
 
     # Grab the Account Number
     if 'Account Number:' in text:
-        account_part_1 = text.split('Account Number: ')[1]
+        account_part_1 = text.split('Account Number:')[1].strip()
         account_no = account_part_1.split('\n')[0]
         print(f"Account Number {account_no}")
     else:
@@ -61,7 +53,8 @@ def parse_pdf_qube(pdf):
         # Grab the "Transactions" Chunk
         transactions_part_1 = text.split('Transactions')[1]
         transactions_only = transactions_part_1.split('For questions')[0]
-
+        # print("TRANSACTIONS ONLY:")
+        # print(transactions_only)
         return clean_transactions(transactions_only, account_no)
     else:
         print("No Transactions Segment found in PDF")
@@ -69,30 +62,32 @@ def parse_pdf_qube(pdf):
 
 
 def clean_transactions(text, account_no):
+    transactions_list = []
     ### Split out unwanted date like page breaks and footers to return clean list of Transaction objects only
-    transactions = []
-    rows = text.split('\n')
-    strip_text = [
-        'Page',
-        'Date',
-        'Description',
-        'Amount'
-    ]
-    stripped_text = [row for row in rows if not any(delete_words in row for delete_words in strip_text)]
-    for line in stripped_text:
-        if not line:
-            pass
-        else:
-            year = re.match(r'\d\d/\d\d/\d\d\d\d', line)
-            if year:
-                date_orig = year.group()
-                payee = line.split(date_orig)[1]
-                date = datetime.datetime.strptime(date_orig, "%m/%d/%Y").strftime("%Y-%m-%d")
-            if "$" in line:
-                amount = line.replace('$', '')
-                transactions.append(Transaction(date, payee, amount, account_no))
-    
-    return transactions
+    text = text.replace('\n', ' ').replace('\r', ' ')
+    trans_pattern = r'\d{2}/\d{2}/\d{4}.*?-?\$[\d,]+\.\d{2}'
+    transactions = re.findall(trans_pattern, text)
+    for transaction in transactions:
+
+        # Define the regex pattern
+        pattern = r'^(\d{2}/\d{2}/\d{4})\s*(.*?)\s*(-?\$[\d,]+\.\d{2})$'
+
+        # Use the re.search() function to find the pattern in the string
+        match = re.search(pattern, transaction)
+
+        # Extract the groups if a match is found
+        if match:
+            groups = match.groups()
+            # date = groups[0]
+            date = datetime.datetime.strptime(groups[0], "%m/%d/%Y").strftime("%Y-%m-%d")
+            description = groups[1]
+            amount = groups[2]
+            # Remove commas and dollar signs from the amount string, if present
+            amount = amount.replace(',', '').replace('$', '')
+            # Add to the list as a Transaction object
+            transactions_list.append(Transaction(date, description, amount, account_no))
+    return transactions_list
+
 
 def print_transaction_overview(transactions):
     # Print out a dataframe and deposit/withdrawal balances for reconciling (helped with checking that there are no missing transactions during development)
@@ -126,10 +121,27 @@ def print_transaction_overview(transactions):
         print("No transactions found.. skipping document")
         time.sleep(2)
 
+    
+
+def process_pdfs(files):
+    # Create a master transaction list
+    all_transactions = []
+    # For each pdf...
+    for file in files:
+        if Path(file).suffix == '.pdf':
+            print(f"\n >>>>>>>>>> Processing Qube Statement: {file}")
+            # Parse The PDF for transactions
+            file_transactions = parse_pdf_qube(file)
+            # Print some data to reconcile against if necessary
+            print_transaction_overview(file_transactions)
+            # Write the file's transactions to the master transactions list
+            for file_transaction in file_transactions:
+                all_transactions.append(file_transaction)
+    return all_transactions
+
 
 def write_csv(transactions):
     # write to CSV 
-
     print("WRITING CSV..")
     df = pd.DataFrame([x.as_dict() for x in transactions])
     df['date'] = pd.to_datetime(df['date'])
@@ -138,29 +150,26 @@ def write_csv(transactions):
     print(f"COMPLETE! CHECK FILE IN: {CSV_OUTPUT}")
 
 
+def return_csv(transactions):
+    # Return a CSV without writing it to disk
+    df = pd.DataFrame([x.as_dict() for x in transactions])
+    df.to_csv(index=False, header=True)
+    return df
 
 
-##### MAIN LOGIC #####
+##### MAIN LOGIC TO CALL FOR REMOTE API #####
+def csv_to_pdf_web(pdf_files):
+    all_transactions = process_pdfs(pdf_files)
+    csv = return_csv(all_transactions)
+    return csv
+
+
+##### MAIN LOGIC FOR LOCAL FILES #####
 if __name__ == '__main__':
- 
     # Get list of Files 
-    files = sorted(Path(STATEMENTS_LOCATION).glob('*'))
-    if len(files) == 0:
+    local_files = sorted(Path(STATEMENTS_LOCATION).glob('*'))
+    if len(local_files) == 0:
         print(f"\n No files found in directory: {Path(dir)}")
     else:
-        # Create a master transaction list
-        all_transactions = []
-        # For each pdf...
-        for file in files:
-            if Path(file).suffix == '.pdf':
-                print(f"\n >>>>>>>>>> Processing Qube Statement: {file}")
-                # Parse The PDF for transactions
-                file_transactions = parse_pdf_qube(file)
-                # Print some data to reoncile against if necessary
-                print_transaction_overview(file_transactions)
-                # Write the file's transactions to the master transactions list
-                for file_transaction in file_transactions:
-                    all_transactions.append(file_transaction)
-
-    # Write the master transactions list out to a csv file
-    write_csv(all_transactions)
+        all_transactions = process_pdfs(local_files)
+        write_csv(all_transactions)
