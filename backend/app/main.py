@@ -1,23 +1,26 @@
 import os
 import sys
-
-print(sys.path)
 from datetime import datetime
 from typing import List
 
+from app import convert_pdf
 from fastapi import FastAPI, File, UploadFile
 from fastapi.exceptions import HTTPException
 from fastapi.responses import StreamingResponse
-
-from app import convert_pdf
-
-# from convert_pdf import csv_to_pdf_web
-
-# # # Add the directory containing my_module.py to the Python path
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8000", "http://0.0.0.0:8000", "*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Content-Disposition"]
+)
+
 
 @app.post("/uploadfiles/")
 async def upload_files(uploaded_files: List[UploadFile] = File(...)):
