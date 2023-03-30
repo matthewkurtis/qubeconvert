@@ -8,7 +8,7 @@ async function uploadPDF(files) {
   loadingIcon.style.display = 'block'; // Show loading icon
 
   try {
-    const response = await fetch('https://api.qubecontrol.com/uploadfiles/', {
+    const response = await fetch('https://api.qubeconvert.com/uploadfiles/', {
       method: 'POST',
       body: formData
     });
