@@ -1,0 +1,21 @@
+version: "3.7"
+services: 
+  qubeconvert-backend: 
+    container_name: qubeconvert-backend
+    build: ./backend/
+    ports:
+      - 8000:8000
+    networks:
+      - qubeconvert
+  qubeconvert-frontend: 
+    container_name: qubeconvert-frontend
+    build: ./frontend/
+    ports:
+      - 80:80
+    networks:
+      - qubeconvert
+
+networks:
+  qubeconvert:
+    external: false
+    name: qubeconvert
