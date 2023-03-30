@@ -14,7 +14,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://0.0.0.0:8000", "http://localhost:80", "http://0.0.0.0:80", "http://localhost"],
+    allow_origins=["http://localhost:8000", "http://0.0.0.0:8000", "http://localhost:3000", "http://0.0.0.0:3000", "http://localhost", "https://qubeconvert.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
