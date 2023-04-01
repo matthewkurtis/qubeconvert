@@ -32,7 +32,7 @@ async function uploadFiles(files) {
 
 
   try {
-    const response = await fetch('https://qubeconvert.com/uploadfiles/', {
+    const response = await fetch('https://api.qubeconvert.com/uploadfiles/', {
       method: 'POST',
       body: formData
     });
