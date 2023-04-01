@@ -5,13 +5,15 @@ services:
     build: ./backend/
     ports:
       - 8000:8000
+    restart: unless-stopped
     networks:
       - qubeconvert
   qubeconvert-frontend: 
     container_name: qubeconvert-frontend
     build: ./frontend/
     ports:
-      - 80:80
+      - 3000:80
+    restart: unless-stopped
     networks:
       - qubeconvert
 
