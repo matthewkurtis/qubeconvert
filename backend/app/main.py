@@ -14,7 +14,14 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://0.0.0.0:8000", "http://localhost:3000", "http://0.0.0.0:3000", "http://localhost", "https://qubeconvert.com"],
+    allow_origins=["http://localhost:8000", 
+                   "http://0.0.0.0:8000", 
+                   "http://localhost:3000", 
+                   "http://0.0.0.0:3000", 
+                   "http://localhost", 
+                   "https://qubeconvert.com",
+                   "*"
+                   ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +33,7 @@ app.add_middleware(
 async def upload_files(uploaded_files: List[UploadFile] = File(...)):
     # Process the uploaded files here
     upload_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    message = f"Successfully uploaded {len(uploaded_files)} files. Date is: {upload_timestamp}"
+    print(f"{upload_timestamp} - Successfully uploaded {len(uploaded_files)} files.")
     # return message
     files = []
     for file in uploaded_files:
@@ -36,10 +43,9 @@ async def upload_files(uploaded_files: List[UploadFile] = File(...)):
             read_file = file.file
             files.append(read_file)
     csv = convert_pdf.csv_to_pdf_web(files)
-    download_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     return StreamingResponse(
         iter(csv),
         media_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename=qube-transactions_{download_timestamp}.csv"}
+        headers={"Content-Disposition": f"attachment; filename=qube-transactions.csv"}
 )
 

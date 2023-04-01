@@ -8,9 +8,9 @@ downloadButton = document.querySelector(".download-area-content");
 form.addEventListener("click", () =>{
   fileInput.click();
   while(downloadButton.hasChildNodes()){
-    downloadButton.removeChild(downloadButton.firstChild); // Remove the first child of list everytime until the list is null.
+    downloadButton.removeChild(downloadButton.firstChild);
   }
-  downloadArea.style.display = 'none'; //Hide Download Button
+  downloadArea.style.display = 'none';
 });
 
 fileInput.onchange = ({target})=>{
@@ -26,9 +26,8 @@ async function uploadFiles(files) {
     formData.append('uploaded_files', file, file.name);
   }
 
-  // Hide / Show Sections
 
-  uploadArea.style.display = 'block'; // Show loading icon
+  uploadArea.style.display = 'block';
 
 
   try {
@@ -52,14 +51,15 @@ async function uploadFiles(files) {
       downloadLink.download = filename;
       downloadLink.innerHTML = 'Download CSV';
       downloadButton.appendChild(downloadLink);
+      downloadArea.style.display = 'block';
     } else {
-      alert('Error uploading PDFs');
+      alert("Something went wrong... \nMake sure your file is a Qube Statement PDF");
     }
   } catch (error) {
     console.error(error);
-    alert('Error uploading PDFs');
+    alert(error);
   } finally {
-    uploadArea.style.display = 'none'; // Hide loading icon
-    downloadArea.style.display = 'block'; //Show Download Button
+    uploadArea.style.display = 'none';
+    
   }
 }
