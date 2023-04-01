@@ -1,0 +1,225 @@
+/* Import Google font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+::selection{
+  color: #fff;
+  background: #16A8FE;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #16A8FE;
+  background: -webkit-linear-gradient(45deg, #16A8FE, #2EE999);
+  background: linear-gradient(45deg, #16A8FE, #2EE999);
+  flex-direction: column;
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+.wrapper{
+  width: 430px;
+  background: #fff;
+  border-radius: 5px;
+  padding: 30px;
+  box-shadow: 7px 7px 12px rgba(0,0,0,0.05);
+}
+.wrapper header{
+  color: #16A8FE;
+  font-size: 27px;
+  font-weight: 600;
+  text-align: center;
+}
+.wrapper form{
+  height: 167px;
+  display: flex;
+  cursor: pointer;
+  margin: 0 0 30px 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 5px;
+  border: 2px dashed #16A8FE;
+}
+.files-attached {
+  margin-bottom: -15px;
+  text-align: center;
+  color: #404040;
+  font-size: 11px;
+}
+
+form :where(i, p){
+  color: #16A8FE;
+}
+form i{
+  font-size: 50px;
+}
+form p{
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+
+button {
+  border:none;
+  width: 100%;
+  margin-bottom: 10px;
+  background: #e0f3ff;
+  padding: 15px 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  cursor: pointer;
+}
+
+section .row{
+  margin-bottom: 10px;
+  background: #e0f3ff;
+  list-style: none;
+  padding: 15px 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 70px;
+}
+
+
+section .row i{
+  color: #16A8FE;
+  font-size: 30px;
+}
+section .details span{
+  font-size: 14px;
+}
+
+
+/* ----- ROW 1 UPLOAD BUTTON ----- */
+.upload-button-area .row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.title .title-text{
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+  color: #16A8FE;
+}
+
+
+/* ----- ROW 2 UPLOAD PROGRESS ----- */
+.progress-area .row .content{
+  width: 100%;
+  margin-left: 15px;
+}
+.progress-area .details{
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+  justify-content: space-between;
+}
+.progress-area .content .progress-bar{
+  height: 6px;
+  width: 100%;
+  margin-bottom: 4px;
+  background: #fff;
+  border-radius: 30px;
+}
+.content .progress-bar .progress{
+  height: 100%;
+  width: 0%;
+  background: #16A8FE;
+  border-radius: inherit;
+}
+
+/* ----- ROW 3 UPLOAD COMPLETE ----- */
+.uploading-area{
+  max-height: 232px;
+  overflow-y: scroll;
+}
+.uploading-area.onprogress{
+  max-height: 150px;
+}
+.uploading-area::-webkit-scrollbar{
+  width: 0px;
+}
+.uploading-area .row .content{
+  display: flex;
+  align-items: center;
+}
+.uploading-area .row .details{
+  display: flex;
+  margin-left: 15px;
+  flex-direction: column;
+}
+.uploading-area .row .details .size{
+  color: #404040;
+  font-size: 11px;
+}
+
+.uploading-area .process-ring {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+.uploading-area .process-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  margin: 8px;
+  border: 3px solid #16A8FE;
+  border-radius: 50%;
+  animation: process-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #16A8FE transparent transparent transparent;
+}
+.uploading-area .process-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.uploading-area .process-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.uploading-area .process-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes process-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ----- ROW 4 DOWNLOAD ----- */
+.download-area .row{
+  background: #16A8FE;
+  background: -webkit-linear-gradient(45deg, #16A8FE, #2EE999);
+  background: linear-gradient(45deg, #5cc3ff, #2EE999);
+  display: flex;
+  justify-content: center;
+}
+.download-area-content a {
+  color: #FFF;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+}
