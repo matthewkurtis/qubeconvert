@@ -223,3 +223,16 @@ section .details span{
   font-weight: 500;
   font-size: 18px;
 }
+
+.github-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.github-link a {
+  font-size: 12px;
+  color: black;
+  text-decoration: none;
+  margin-top: 5px;
+}
