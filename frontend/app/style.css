@@ -30,7 +30,7 @@ body {
 .wrapper{
   width: 430px;
   background: #fff;
-  border-radius: 5px;
+  border-radius: 15px;
   padding: 30px;
   box-shadow: 7px 7px 12px rgba(0,0,0,0.05);
 }
@@ -48,7 +48,7 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  border-radius: 5px;
+  border-radius: 15px;
   border: 2px dashed #16A8FE;
 }
 .files-attached {
@@ -76,7 +76,7 @@ button {
   margin-bottom: 10px;
   background: #e0f3ff;
   padding: 15px 20px;
-  border-radius: 5px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +89,7 @@ section .row{
   background: #e0f3ff;
   list-style: none;
   padding: 15px 20px;
-  border-radius: 5px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
