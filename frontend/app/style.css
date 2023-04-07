@@ -69,6 +69,10 @@ form p{
   font-size: 16px;
 }
 
+form.dragover {
+  border: 2px dashed #0f79b7;
+  background-color: #cdedff;
+}
 
 button {
   border:none;

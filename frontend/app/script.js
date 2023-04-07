@@ -13,6 +13,24 @@ form.addEventListener("click", () =>{
   downloadArea.style.display = 'none';
 });
 
+form.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  form.classList.add("dragover");
+});
+
+form.addEventListener("dragleave", () => {
+  form.classList.remove("dragover");
+});
+
+form.addEventListener("drop", (e) => {
+  e.preventDefault();
+  form.classList.remove("dragover");
+  const files = e.dataTransfer.files;
+  if (files) {
+    uploadFiles(files);
+  }
+});
+
 fileInput.onchange = ({target})=>{
   let files = target.files;
   if(files){
