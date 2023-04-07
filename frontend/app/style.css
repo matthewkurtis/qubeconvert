@@ -44,7 +44,6 @@ body {
   height: 167px;
   display: flex;
   cursor: pointer;
-
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -63,7 +62,7 @@ body {
   text-align: center;
   /* color: #646464; */
   color: white;
-  margin-bottom: 10px
+  margin: 0 10px 10px;
 }
 
 .icons {
@@ -118,8 +117,9 @@ form i{
   font-size: 50px;
 }
 form p{
-  margin-top: 15px;
+  margin: 15px 10px 0;
   font-size: 16px;
+  text-align: center;
 }
 
 form.dragover {
@@ -308,5 +308,16 @@ section .details span{
   font-size: 9px;
   color: #ffffff;
   text-align: center;
-  margin-top: 10px;
+  margin: 10px;
+}
+
+
+
+/* ---------- RESPONSIvE ---------- */
+@media only screen and (max-width: 600px) {
+.wrapper {
+width: 90%;
+max-width: 430px;
+}
+
 }
